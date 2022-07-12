@@ -177,4 +177,4 @@ def send_slack_msg(channel, text):
         headers={"Authorization": "Bearer "+myToken},
         data={"channel": channel,"text": text}
     )
-    print(response)
+    
