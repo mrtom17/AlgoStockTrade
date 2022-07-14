@@ -10,7 +10,8 @@ from collections import namedtuple
 from datetime import datetime
 
 # HTTP 연결 기본 정보를 정의 한다.
-with open(r'configini.yaml', encoding='UTF-8') as f:
+conf_file = '~/AlgoStockTrade/configini.yaml'
+with open(conf_file, encoding='UTF-8') as f:
     _cfg = yaml.load(f, Loader=yaml.FullLoader)
 
 _TRENV = tuple()
