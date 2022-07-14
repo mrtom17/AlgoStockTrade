@@ -156,8 +156,8 @@ def set_order_hash_key(h, p):
         msgout("Error:"+rescode)
 
 
-LOG_FILE_DIR = 'log'
-LOG_FILE_NAME = 'log/kis_trade_hist.log'
+LOG_FILE_DIR = '/home/ubuntu/AlgoStockTrade/log'
+LOG_FILE_NAME = '/home/ubuntu/AlgoStockTrade/log/kis_trade_hist.log'
 
 def msgout(msg) -> None:
     if os.path.exists(LOG_FILE_NAME):
