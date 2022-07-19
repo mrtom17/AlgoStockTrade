@@ -10,7 +10,17 @@ from collections import namedtuple
 from datetime import datetime
 
 # HTTP 연결 기본 정보를 정의 한다.
-conf_file = '/home/ubuntu/AlgoStockTrade/configini.yaml'
+svc_type = 'local'
+
+if svc_type == 'local':
+    conf_file = '/Users/tom.my/Public/Study/AlgoStockTrade/configini.yaml'
+    LOG_FILE_DIR = '/Users/tom.my/Public/Study/AlgoStockTrade/log'
+    LOG_FILE_NAME = '/Users/tom.my/Public/Study/AlgoStockTrade/log/kis_trade_hist.log'
+else:
+    conf_file = '/home/ubuntu/AlgoStockTrade/configini.yaml'
+    LOG_FILE_DIR = '/home/ubuntu/AlgoStockTrade/log'
+    LOG_FILE_NAME = '/home/ubuntu/AlgoStockTrade/log/kis_trade_hist.log'
+
 with open(conf_file, encoding='UTF-8') as f:
     _cfg = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -154,10 +164,6 @@ def set_order_hash_key(h, p):
     else:
         #print("Error:", rescode)
         msgout("Error:"+rescode)
-
-
-LOG_FILE_DIR = '/home/ubuntu/AlgoStockTrade/log'
-LOG_FILE_NAME = '/home/ubuntu/AlgoStockTrade/log/kis_trade_hist.log'
 
 def msgout(msg) -> None:
     if os.path.exists(LOG_FILE_NAME):
