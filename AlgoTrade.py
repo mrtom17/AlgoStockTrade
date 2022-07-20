@@ -99,6 +99,7 @@ def _buy_stock(stock,bestk=0.5):
 
         # 변동성 돌파 매매 전략 실행
         if current_price > target_price and current_price > ma5 and current_price > ma10:
+            msgout('현금주문 가능금액 : '+ str(buy_amount))
             msgout(str(stock) + '는 주문 수량 (' + str(buy_qty) +') EA : ' + str(current_price) + ' meets the buy condition!`')
             if stock_qty == 0:
                 ret = atof.do_buy(str(stock) , buy_qty, current_price)
@@ -108,7 +109,6 @@ def _buy_stock(stock,bestk=0.5):
                 else:
                     msgout('변동성 돌파 매매 실패 -> 주식('+str(stock)+')')
                     return False
-            msgout('현금주문 가능금액 : '+ str(buy_amount))
     except Exception as ex:
         msgout("`_buy_stock("+ str(stock) + ") -> exception! " + str(ex) + "`")   
 
