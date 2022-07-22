@@ -85,7 +85,9 @@ def set_stock_target_price(stock , bestk=0.5):
 # 주식 매수 
 def _buy_stock(stock,bestk=0.5):
     try:
-        global buy_done_list 
+        global buy_done_list
+        print(buy_done_list)
+
         if stock in buy_done_list: 
             return False
         target_price, ma5, ma10 = set_stock_target_price(stock,bestk)
@@ -158,6 +160,7 @@ if '__main__' == __name__:
             t_now = datetime.now()
             t_9 = t_now.replace(hour=9, minute=0, second=0, microsecond=0)
             t_start = t_now.replace(hour=9, minute=5, second=0, microsecond=0)
+            t_buy_start = t_now.replace(hour=10, minute=0, second=0, microsecond=0)
             t_sell = t_now.replace(hour=15, minute=15, second=0, microsecond=0)
             t_exit = t_now.replace(hour=15, minute=20, second=0,microsecond=0)
             today = datetime.today().weekday()
@@ -178,7 +181,7 @@ if '__main__' == __name__:
                 if _sell_stock() == True:
                     msgout(msg_resell)
                     atcm.send_slack_msg("#stock",msg_resell)
-            if t_start < t_now < t_sell:
+            if t_buy_start < t_now < t_sell:
                 for std in stock_list:
                     stock_no = std[0]
                     stock_k = std[1]
