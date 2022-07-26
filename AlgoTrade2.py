@@ -211,10 +211,10 @@ def _sell_each_stock(stocks):
 
                 ret = atof.do_sell(s['sell_code'], s['sell_qty'], current_price)
                 if ret:
-                    msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 성공 ->('+str(s['code'])+')('+str(current_price)+')')
+                    msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 성공 ->('+str(s['sell_code'])+')('+str(current_price)+')')
                     sell_done_list.append(s['sell_code'])
                 else:
-                    msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 실패 ->('+str(s['code'])+')')
+                    msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 실패 ->('+str(s['sell_code'])+')')
 
             time.sleep(1)
     except Exception as ex:
