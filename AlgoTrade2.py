@@ -118,8 +118,8 @@ def _buy_able_stock(infos):
         _ma5 = infos['ma5']
         _ma10 = infos['ma10']
 
-        if stock in buy_done_list:
-            return False
+        #if stock in buy_done_list:
+        #    return False
 
         #current_price = int(trinfo.get_current_price(stock)['stck_prpr'])
         stock_data = trinfo.get_current_price(stock)
@@ -286,7 +286,7 @@ if '__main__' == __name__:
                     msgout(msg_resell)
                     atcm.send_slack_msg("#stock",msg_resell)
             if t_start < t_now < t_sell:
-                print(buy_done_list)
+                #print(buy_done_list)
                 if len(buy_done_list) < target_buy_count:
                     for std in target_stock_values:
                         lstock = _buy_able_stock(std)
