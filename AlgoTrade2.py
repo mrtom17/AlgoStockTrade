@@ -288,28 +288,17 @@ if '__main__' == __name__:
             if t_start < t_now < t_sell:
                 #print(buy_done_list)
                 if len(buy_done_list) < target_buy_count:
-                    for std in target_stock_values:
-                        lstock = _buy_able_stock(std)
+                    #for std in target_stock_values:
+                    #    lstock = _buy_able_stock(std)
+                    #    time.sleep(1)
+
+                    for bstock in target_stock_values:
+                        _stock = bstock['stock']
+                        if _stock in buy_done_list:
+                            continue
+                        _buy_stock(bstock)
                         time.sleep(1)
-                    if len(lstock) > 0 and len(lstock) < 6:
-                        for bstock in lstock:
-                            _stock = bstock['stock']
-                            if _stock in buy_done_list:
-                                continue
-                            _buy_stock(bstock)
-                            time.sleep(1)
-                    if len(lstock) > 6:
-                        target_buy_count = len(lstock)
-                        buy_percent = 0.9/len(lstock)
-                        total_cash = int(mystock.get_buyable_cash())
-                        buy_amount = total_cash * buy_percent
-                        #stocks_cnt = len(get_mystock_balance('ALL'))
-                        for bstock in lstock:
-                            if _stock in buy_done_list:
-                                continue                            
-                            _buy_stock(bstock)
-                            time.sleep(1)
-                if t_now.minute == 30 and 0 <= t_now.second <=10:
+                if t_now.minute == 30 and 0 <= t_now.second <=5:
                     #stocks_cnt = len(get_mystock_balance('ALL'))
                     atcm.send_slack_msg("#stock",msg_proc)
                     time.sleep(5)
