@@ -74,7 +74,12 @@ def get_buy_stock_info(stock_list):
             _ma10 = closes.rolling(window=10).mean()
             ma5 = _ma5.iloc[-1]
             ma10 = _ma10.iloc[-1]
-            target_price = today_open + (lastday_high - lastday_low) * bestk
+            _target_price = today_open + (lastday_high - lastday_low) * bestk
+
+            stock_data = trinfo.get_current_price(stock)
+            aspr_unit = int(stock_data['aspr_unit'])
+            _t_price = int(_target_price/aspr_unit)
+            target_price = _t_price * aspr_unit            
 
             _stock_output = {'stock' : stock ,'target_p' : int(target_price) , 'ma5' : ma5, 'ma10' : ma10}
             stock_output.append(_stock_output)
