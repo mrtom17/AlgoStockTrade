@@ -2,7 +2,7 @@
 '''
 # 알고리즘 트래이딩 시스템
 # Auth : mrtom17
-# AlgoTrade.py
+# AlgoTrade3.py
 '''
 # import Lib
 import argparse, sys
@@ -30,6 +30,9 @@ cashout = False
 # 공통 Function 정의
 msgout = atcm.msgout
 
+# Function 정의
+
+# 주식 보유 잔고를 가져온다
 def get_mystock_balance(stock):
     # 보유한 주식과 예수금을 반환한다.
     mystocklist = mystock.get_acct_balance()
@@ -51,9 +54,9 @@ def get_mystock_balance(stock):
     else:
         return None , 0
 
+# 주식 리스트에서 Target Price 를 리턴한다        
 def get_buy_stock_info(stock_list):
     try:
-
         stock_output = []
         for std in stock_list:
             stock = std[0]
@@ -90,102 +93,7 @@ def get_buy_stock_info(stock_list):
         msgout("`get_buy_stock_info() -> exception! " + str(ex) + "`")
         return None      
 
-def set_stock_target_price(stock , bestk=0.5):
-    try:
-        str_today = t_now.replace(hour=0, minute=0, second=0, microsecond=0)
-        df = trinfo.get_stock_history_by_ohlcv(stock,adVar=True)
-        if str_today == df.iloc[0].name:
-            today_open = df.iloc[0]['Open']
-            lastday = df.iloc[1]
-        else:
-            lastday = df.iloc[0]
-            today_open = df.iloc[1]['Close']
-        lastday_high = lastday['High']
-        lastday_low = lastday['Low']
-        closes = df['Close'].sort_index()
-        _ma5 = closes.rolling(window=5).mean()
-        _ma10 = closes.rolling(window=10).mean()
-
-        ma5 = _ma5.iloc[-1]
-        ma10 = _ma10.iloc[-1]
-        target_price = today_open + (lastday_high - lastday_low) * bestk
-        return int(target_price) , int(ma5), int(ma10)
-    except Exception as ex:
-        msgout("`get_target_price() -> exception! " + str(ex) + "`")
-        return None , None , None
-
-def _buy_able_stock(infos):
-    try:
-        global buy_done_list 
-
-        stock = infos['stock']
-        t_price = infos['target_p']
-        _ma5 = infos['ma5']
-        _ma10 = infos['ma10']
-
-        #if stock in buy_done_list:
-        #    return False
-
-        #current_price = int(trinfo.get_current_price(stock)['stck_prpr'])
-        stock_data = trinfo.get_current_price(stock)
-        current_price = int(stock_data['stck_prpr'])
-        aspr_unit = int(stock_data['aspr_unit'])
-        _t_price = int(t_price/aspr_unit)
-        target_price = _t_price * aspr_unit
-
-        if current_price > t_price and current_price > _ma5 and current_price > _ma10:
-            _stock_output = {'stock' : stock ,'target_p' : target_price , 'ma5' : _ma5, 'ma10' : _ma10}
-            #print(_stock_output)
-            if stock not in buy_done_list:
-                stock_buy_able_list.append(_stock_output)
-        return stock_buy_able_list
-    except Exception as ex:
-        msgout("`_buy_able_stock() -> exception! " + str(ex) + "`")
-
-# 주식 매수 
-def _buy_stock(infos):
-    try:
-        global buy_done_list
-
-        stock = infos['stock']
-        target_price = infos['target_p']
-        ma5 = infos['ma5']
-        ma10 = infos['ma10']
-
-        print(infos)
-
-        if stock in buy_done_list: 
-            return False
-
-        current_price = int(trinfo.get_current_price(stock)['stck_prpr'])
-        buy_qty = 0
-
-        if current_price > 0:
-            buy_qty = int(buy_amount // target_price)
-        if buy_qty < 1:
-            return False
-
-        stock_name, stock_qty = get_mystock_balance(stock)
-
-        # 변동성 돌파 매매 전략 실행
-        if current_price > target_price and current_price > ma5 and current_price > ma10:
-            if stock_qty == 0:
-                msgout('현금주문 가능금액 : '+ str(buy_amount))
-                msgout(str(stock) + '는 현재가 ('+str(current_price)+')이고  주문 가격 (' + str(target_price) +') ' + str(buy_qty) + ' EA : meets the buy condition!`')
-                ret = atof.do_buy(str(stock) , buy_qty, target_price)
-                if ret:
-                    msgout('변동성 돌파 매매 성공 -> 주식('+str(stock)+') 매수가격 ('+str(target_price)+')')
-                    buy_done_list.append(stock)
-                    return True
-                else:
-                    msgout('변동성 돌파 매매 실패 -> 주식('+str(stock)+')')
-                    return False
-            else:
-                msgout(str(stock) + '('+str(stock_name)+')는 기주문 수량 (' + str(stock_qty) +') EA : 주문 진행을 하지 않는다!`')
-
-    except Exception as ex:
-        msgout("`_buy_stock("+ str(stock) + ") -> exception! " + str(ex) + "`")   
-
+# 초과 수익으로 매도 가능 주식 check
 def _check_profit():
     # 보유한 모든 종목을 당일 종가 혹은 다음날 시작가에 매도 
     try:
@@ -202,8 +110,49 @@ def _check_profit():
             time.sleep(1)
         return stocks
     except Exception as ex:
-        msgout("_check_profit() -> exception! " + str(ex))    
+        msgout("_check_profit() -> exception! " + str(ex))  
 
+# 주식 매수 
+def _buy_stock(infos):
+    try:
+        global buy_done_list
+
+        stock = infos['stock']
+        target_price = infos['target_p']
+        ma5 = infos['ma5']
+        ma10 = infos['ma10']
+
+        if stock in buy_done_list: 
+            return False
+
+        current_price = int(trinfo.get_current_price(stock)['stck_prpr'])
+        buy_qty = 0
+
+        if current_price > 0:
+            buy_qty = int(buy_amount // target_price)
+        if buy_qty < 1:
+            return False
+
+        #stock_name, stock_qty = get_mystock_balance(stock)
+
+        # 변동성 돌파 매매 전략 실행
+        #print(stock,current_price,target_price,ma5,ma10 )
+        if current_price > target_price and current_price > ma5 and current_price > ma10:
+            msgout('현금주문 가능금액 : '+ str(buy_amount))
+            msgout(str(stock) + '는 현재가 ('+str(current_price)+')이고  주문 가격 (' + str(target_price) +') ' + str(buy_qty) + ' EA : meets the buy condition!`')
+            ret = atof.do_buy(str(stock) , buy_qty, target_price)
+            if ret:
+                msgout('변동성 돌파 매매 성공 -> 주식('+str(stock)+') 매수가격 ('+str(target_price)+')')
+                buy_done_list.append(stock)
+                return True
+            else:
+                msgout('변동성 돌파 매매 실패 -> 주식('+str(stock)+')')
+                return False
+
+    except Exception as ex:
+        msgout("`_buy_stock("+ str(stock) + ") -> exception! " + str(ex) + "`")   
+
+# 초과 수익 달성 주식 장중 매도
 def _sell_each_stock(stocks):
     # 보유한 모든 종목을 당일 종가 혹은 다음날 시작가에 매도 
     try:
@@ -219,14 +168,14 @@ def _sell_each_stock(stocks):
                 ret = atof.do_sell(s['sell_code'], s['sell_qty'], current_price)
                 if ret:
                     msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 성공 ->('+str(s['sell_code'])+')('+str(current_price)+')')
-                    sell_done_list.append(s['sell_code'])
+                    return True
                 else:
                     msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 실패 ->('+str(s['sell_code'])+')')
-
-            time.sleep(1)
+                    return False
     except Exception as ex:
         msgout("_sell_each_stock() -> exception! " + str(ex))
 
+# 주식 매도
 def _sell_stock():
     # 보유한 모든 종목을 당일 종가 혹은 다음날 시작가에 매도 
     try:
@@ -254,15 +203,12 @@ if '__main__' == __name__:
     try:
         atcm.auth(svr,product='01')
         stock_list = atcm._cfg['stlist']
-        target_stock_values = get_buy_stock_info(stock_list)
+        target_stock_values = []
         buy_done_list = []
-        stock_buy_able_list = []
-        sell_done_list = []
         target_buy_count = 5
         buy_percent = 0.19
         total_cash = int(mystock.get_buyable_cash())
         buy_amount = total_cash * buy_percent
-        #stocks_cnt = len(get_mystock_balance('ALL'))
         msgout('----------------100% 증거금 주문 가능 금액 :'+str(total_cash))
         msgout('----------------종목별 주문 비율 :'+str(buy_percent))
         msgout('----------------종목별 주문 금액 :'+str(buy_amount))
@@ -292,35 +238,36 @@ if '__main__' == __name__:
                 if _sell_stock() == True:
                     msgout(msg_resell)
                     atcm.send_slack_msg("#stock",msg_resell)
-            if t_start < t_now < t_sell:
-                print(buy_done_list)
-                print(target_stock_values)
-                if len(buy_done_list) < target_buy_count:
-                    #for std in target_stock_values:
-                    #    lstock = _buy_able_stock(std)
-                    #    time.sleep(1)
+                if target_stock_values:
+                    pass
+                else:
+                    target_stock_values = get_buy_stock_info(stock_list)
 
+            if t_start < t_now < t_sell:
+                # 임시
+                if target_stock_values:
+                    pass
+                else:
+                    target_stock_values = get_buy_stock_info(stock_list)
+
+                if len(buy_done_list) < target_buy_count:
                     for bstock in target_stock_values:
-                        _stock = bstock['stock']
-                        if _stock in buy_done_list:
-                            continue
+                        if bstock['stock'] in buy_done_list:
+                            pass
                         _buy_stock(bstock)
                         time.sleep(1)
-                if t_now.minute == 30 and 0 <= t_now.second <=5:
-                    #stocks_cnt = len(get_mystock_balance('ALL'))
-                    atcm.send_slack_msg("#stock",msg_proc)
-                    time.sleep(5)
                 if len(buy_done_list) > 0:
                     sellable_stock =_check_profit()
                     if len(sellable_stock) > 0:
                         _sell_each_stock(sellable_stock)
-                        time.sleep(1)
+                if t_now.minute == 30 and 0 <= t_now.second <=5:
+                    atcm.send_slack_msg("#stock",msg_proc)
+                    time.sleep(1)
             if t_sell < t_now < t_exit:
                 if _sell_stock() == True:
                     msgout(msg_sellall)
                     atcm.send_slack_msg("#stock",msg_sellall)
                     sys.exit(0)
-            
             if t_exit < t_now:
                 msgout(msg_end)
                 atcm.send_slack_msg("#stock",msg_end)

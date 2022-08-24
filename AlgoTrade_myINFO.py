@@ -43,7 +43,8 @@ def get_acct_balance(rtCashFlag=False):
         tdf[cf1[1:]] = tdf[cf1[1:]].apply(pd.to_numeric)
         ren_dict = dict(zip(cf1, cf2))
         return tdf.rename(columns=ren_dict)
-        
+    elif t1.isOK():
+        return pd.DataFrame()
     else:
         t1.printError()
         return pd.DataFrame()
@@ -63,7 +64,6 @@ def get_buyable_cash(stock_code='', qry_price=0, prd_code='01'):
      }
 
     t1 = _url_fetch(url, tr_id, params)
-
     if t1.isOK():
         return int(t1.getBody().output['ord_psbl_cash'])
     else:
