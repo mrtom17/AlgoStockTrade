@@ -84,7 +84,7 @@ def get_buy_stock_info(stock_list):
             _t_price = int(_target_price/aspr_unit)
             target_price = _t_price * aspr_unit            
 
-            _stock_output = {'stock' : stock ,'target_p' : int(target_price) , 'ma5' : ma5, 'ma10' : ma10}
+            _stock_output = {'stock' : stock ,'target_p' : int(target_price) , 'ma5' : _target_price, 'ma10' : _t_price}
             stock_output.append(_stock_output)
             time.sleep(1)
         return stock_output
@@ -136,8 +136,8 @@ def _buy_stock(infos):
         #stock_name, stock_qty = get_mystock_balance(stock)
 
         # 변동성 돌파 매매 전략 실행
-        #print(stock,current_price,target_price,ma5,ma10 )
-        if current_price > target_price and current_price > ma5 and current_price > ma10:
+        #print(stock,current_price,target_price)
+        if current_price >= target_price:
             msgout('현금주문 가능금액 : '+ str(buy_amount))
             msgout(str(stock) + '는 현재가 ('+str(current_price)+')이고  주문 가격 (' + str(target_price) +') ' + str(buy_qty) + ' EA : meets the buy condition!`')
             ret = atof.do_buy(str(stock) , buy_qty, target_price)
@@ -147,8 +147,6 @@ def _buy_stock(infos):
                 return True
             else:
                 msgout('변동성 돌파 매매 실패 -> 주식('+str(stock)+')')
-                return False
-
     except Exception as ex:
         msgout("`_buy_stock("+ str(stock) + ") -> exception! " + str(ex) + "`")   
 
@@ -254,13 +252,12 @@ if '__main__' == __name__:
                     for bstock in target_stock_values:
                         if bstock['stock'] in buy_done_list:
                             pass
-                        _buy_stock(bstock)
                         time.sleep(1)
                 if len(buy_done_list) > 0:
                     sellable_stock =_check_profit()
                     if len(sellable_stock) > 0:
                         _sell_each_stock(sellable_stock)
-                if t_now.minute == 30 and 0 <= t_now.second <=5:
+                if t_now.minute == 30 and 0 <= t_now.second <=20:
                     atcm.send_slack_msg("#stock",msg_proc)
                     time.sleep(1)
             if t_sell < t_now < t_exit:
