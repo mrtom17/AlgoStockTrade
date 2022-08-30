@@ -95,7 +95,6 @@ def get_buy_stock_info(stock_list):
 
 # 초과 수익으로 매도 가능 주식 check
 def _check_profit():
-    # 보유한 모든 종목을 당일 종가 혹은 다음날 시작가에 매도 
     try:
         # 보유한 주식과 예수금을 반환한다.
         mystocklist = mystock.get_acct_balance()
@@ -105,7 +104,7 @@ def _check_profit():
             stock_psbl_qty = mystocklist.iloc[i]['매도가능수량']
             stock_cur_price = mystocklist.iloc[i]['현재가']
             profit_percent = mystocklist.iloc[i]['수익율']
-            if profit_percent > 9.5:
+            if profit_percent > 15.5:
                 stocks.append({'sell_code': stock_code, 'sell_qty': stock_psbl_qty,'sell_price': stock_cur_price})
             time.sleep(1)
         return stocks
@@ -215,7 +214,7 @@ if '__main__' == __name__:
             # 거래 가능 시간 정의
             t_now = datetime.now()
             t_9 = t_now.replace(hour=9, minute=0, second=0, microsecond=0)
-            t_start = t_now.replace(hour=9, minute=5, second=0, microsecond=0)
+            t_start = t_now.replace(hour=9, minute=1, second=0, microsecond=0)
             t_sell = t_now.replace(hour=15, minute=15, second=0, microsecond=0)
             t_exit = t_now.replace(hour=15, minute=20, second=0,microsecond=0)
             today = datetime.today().weekday()
