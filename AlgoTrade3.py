@@ -255,11 +255,11 @@ if '__main__' == __name__:
                         else:
                             pass
                         time.sleep(1)
-                if len(buy_done_list) > 0:
-                    sellable_stock =_check_profit()
-                    if len(sellable_stock) > 0:
-                        _sell_each_stock(sellable_stock)
-                if t_now.minute == 30 and 0 <= t_now.second <=10:
+                #if len(buy_done_list) > 0:
+                #    sellable_stock =_check_profit()
+                #    if len(sellable_stock) > 0:
+                #        _sell_each_stock(sellable_stock)
+                if t_now.minute == 30 and 0 <= t_now.second <=6:
                     atcm.send_slack_msg("#stock",msg_proc)
                     time.sleep(1)
             if t_sell < t_now < t_exit:
