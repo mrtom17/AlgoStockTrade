@@ -246,6 +246,7 @@ if '__main__' == __name__:
                     pass
                 else:
                     target_stock_values = get_buy_stock_info(stock_list)
+
                 if len(buy_done_list) < target_buy_count:
                     for bstock in target_stock_values:
                         if bstock['stock'] in buy_done_list:
@@ -259,7 +260,7 @@ if '__main__' == __name__:
                 #    sellable_stock =_check_profit()
                 #    if len(sellable_stock) > 0:
                 #        _sell_each_stock(sellable_stock)
-                if t_now.minute == 30 and 0 <= t_now.second <=6:
+                if t_now.minute == 30 and 0 <= t_now.second <=3:
                     atcm.send_slack_msg("#stock",msg_proc)
                     time.sleep(1)
             if t_sell < t_now < t_exit:
