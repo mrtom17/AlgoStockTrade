@@ -200,6 +200,7 @@ if '__main__' == __name__:
     try:
         atcm.auth(svr,product='01')
         stock_list = atcm._cfg['stlist']
+        notwork_days = atcm._cfg['nodaylist']
         target_stock_values = []
         buy_done_list = []
         target_buy_count = 5
@@ -218,6 +219,7 @@ if '__main__' == __name__:
             t_sell = t_now.replace(hour=15, minute=15, second=0, microsecond=0)
             t_exit = t_now.replace(hour=15, minute=20, second=0,microsecond=0)
             today = datetime.today().weekday()
+            holiday = datetime.today().strftime('%Y-%m-%d')
 
             # Message 정의 
             msg_end = '['+str(t_now)+'] Kospi & Kosdaq Closed Process self- destructed'
@@ -225,6 +227,12 @@ if '__main__' == __name__:
             msg_resell = '`sell_all() returned True -> 전날 잔여 주식 매도!`'
             msg_proc = 'The AlogoTrading process is still alive'
             msg_sellall = '`sell_all() returned True -> self-destructed!`'
+            msg_holiday = 'Today is Holiday'
+            # 장이 열리지 않는 날은 Exit
+            if holiday in notwork_days:
+                msgout(msg_holiday)
+                atcm.send_slack_msg("#stock",msg_holiday)
+                sys.exit(0)
 
             if today == 5 or today == 6:
                 msgout(msg_week)
