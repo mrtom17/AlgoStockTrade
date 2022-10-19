@@ -10,19 +10,24 @@ from collections import namedtuple
 from datetime import datetime
 
 # HTTP 연결 기본 정보를 정의 한다.
-svc_type = ''
+svc_type = 'local'
 
-if svc_type == 'local':
+if svc_type == '':
     conf_file = '/Users/tom.my/Public/Study/AlgoStockTrade/configini.yaml'
+    conf2_file = '/Users/tom.my/Public/Study/AlgoStockTrade/cfg/tickerlist.yaml'
     LOG_FILE_DIR = '/Users/tom.my/Public/Study/AlgoStockTrade/log'
     LOG_FILE_NAME = '/Users/tom.my/Public/Study/AlgoStockTrade/log/kis_trade_hist.log'
 else:
     conf_file = '/home/ubuntu/AlgoStockTrade/configini.yaml'
+    conf2_file = '/home/ubuntu/AlgoStockTrade/cfg/tickerlist.yaml'
     LOG_FILE_DIR = '/home/ubuntu/AlgoStockTrade/log'
     LOG_FILE_NAME = '/home/ubuntu/AlgoStockTrade/log/kis_trade_hist.log'
 
 with open(conf_file, encoding='UTF-8') as f:
     _cfg = yaml.load(f, Loader=yaml.FullLoader)
+
+with open(conf2_file, encoding='UTF-8') as f:
+    _cfg2 = yaml.load(f, Loader=yaml.FullLoader)
 
 _TRENV = tuple()
 _last_auth_time = datetime.now()

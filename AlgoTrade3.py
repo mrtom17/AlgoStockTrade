@@ -72,11 +72,11 @@ def get_buy_stock_info(stock_list):
                 today_open = df.iloc[1]['Close']
             lastday_high = lastday['High']
             lastday_low = lastday['Low']
-            closes = df['Close'].sort_index()
-            _ma5 = closes.rolling(window=5).mean()
-            _ma10 = closes.rolling(window=10).mean()
-            ma5 = _ma5.iloc[-1]
-            ma10 = _ma10.iloc[-1]
+            #closes = df['Close'].sort_index()
+            #_ma5 = closes.rolling(window=5).mean()
+            #_ma10 = closes.rolling(window=10).mean()
+            #ma5 = _ma5.iloc[-1]
+            #ma10 = _ma10.iloc[-1]
             _target_price = today_open + (lastday_high - lastday_low) * bestk
 
             stock_data = trinfo.get_current_price(stock)
@@ -84,7 +84,8 @@ def get_buy_stock_info(stock_list):
             _t_price = int(_target_price/aspr_unit)
             target_price = _t_price * aspr_unit            
 
-            _stock_output = {'stock' : stock ,'target_p' : int(target_price) , 'ma5' : _target_price, 'ma10' : _t_price}
+            #_stock_output = {'stock' : stock ,'target_p' : int(target_price) , 'ma5' : _target_price, 'ma10' : _t_price}
+            _stock_output = {'stock' : stock ,'target_p' : int(target_price)}
             stock_output.append(_stock_output)
             time.sleep(1)
         return stock_output
@@ -118,8 +119,6 @@ def _buy_stock(infos):
 
         stock = infos['stock']
         target_price = infos['target_p']
-        ma5 = infos['ma5']
-        ma10 = infos['ma10']
 
         if stock in buy_done_list: 
             return False
@@ -131,8 +130,6 @@ def _buy_stock(infos):
             buy_qty = int(buy_amount // target_price)
         if buy_qty < 1:
             return False
-
-        #stock_name, stock_qty = get_mystock_balance(stock)
 
         # 변동성 돌파 매매 전략 실행
         #print(stock,current_price,target_price)
@@ -199,12 +196,12 @@ def _sell_stock():
 if '__main__' == __name__:
     try:
         atcm.auth(svr,product='01')
-        stock_list = atcm._cfg['stlist']
+        stock_list = atcm._cfg2['stlist']
         notwork_days = atcm._cfg['nodaylist']
         target_stock_values = []
         buy_done_list = []
-        target_buy_count = 5
-        buy_percent = 0.19
+        target_buy_count = atcm._cfg['targetbuycount']
+        buy_percent = atcm._cfg['buypercent']
         total_cash = int(mystock.get_buyable_cash())
         buy_amount = total_cash * buy_percent
         msgout('----------------100% 증거금 주문 가능 금액 :'+str(total_cash))
@@ -264,13 +261,10 @@ if '__main__' == __name__:
                         else:
                             pass
                         time.sleep(1)
-                #if len(buy_done_list) > 0:
-                #    sellable_stock =_check_profit()
-                #    if len(sellable_stock) > 0:
-                #        _sell_each_stock(sellable_stock)
                 if t_now.minute == 30 and 0 <= t_now.second <=3:
                     atcm.send_slack_msg("#stock",msg_proc)
                     time.sleep(1)
+
             if t_sell < t_now < t_exit:
                 if _sell_stock() == True:
                     msgout(msg_sellall)
