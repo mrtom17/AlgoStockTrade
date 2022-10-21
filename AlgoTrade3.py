@@ -262,7 +262,6 @@ if '__main__' == __name__:
                             continue
 
                         if len(buy_done_list) < target_buy_count:
-                            print(bstock['stock'])
                             _buy_stock(bstock)
                         else:
                             pass
