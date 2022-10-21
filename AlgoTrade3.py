@@ -132,17 +132,20 @@ def _buy_stock(infos):
             return False
 
         # 변동성 돌파 매매 전략 실행
-        #print(stock,current_price,target_price)
-        if current_price >= target_price:
+        #print(stock,current_price,target_price,buy_qty)
+        if current_price <= target_price:
             msgout('현금주문 가능금액 : '+ str(buy_amount))
             msgout(str(stock) + '는 현재가 ('+str(current_price)+')이고  주문 가격 (' + str(target_price) +') ' + str(buy_qty) + ' EA : meets the buy condition!`')
             ret = atof.do_buy(str(stock) , buy_qty, target_price)
+            #print(ret)
             if ret:
                 msgout('변동성 돌파 매매 성공 -> 주식('+str(stock)+') 매수가격 ('+str(target_price)+')')
                 buy_done_list.append(stock)
-                return True
+                #return True
             else:
                 msgout('변동성 돌파 매매 실패 -> 주식('+str(stock)+')')
+                non_buy_list.append(stock)
+
     except Exception as ex:
         msgout("`_buy_stock("+ str(stock) + ") -> exception! " + str(ex) + "`")   
 
@@ -160,7 +163,7 @@ def _sell_each_stock(stocks):
                     current_price = current_price_s
 
                 ret = atof.do_sell(s['sell_code'], s['sell_qty'], current_price)
-                if ret:
+                if ret is not None:
                     msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 성공 ->('+str(s['sell_code'])+')('+str(current_price)+')')
                     return True
                 else:
@@ -200,6 +203,7 @@ if '__main__' == __name__:
         notwork_days = atcm._cfg['nodaylist']
         target_stock_values = []
         buy_done_list = []
+        non_buy_list = []
         target_buy_count = atcm._cfg['targetbuycount']
         buy_percent = atcm._cfg['buypercent']
         total_cash = int(mystock.get_buyable_cash())
@@ -254,9 +258,11 @@ if '__main__' == __name__:
 
                 if len(buy_done_list) < target_buy_count:
                     for bstock in target_stock_values:
-                        if bstock['stock'] in buy_done_list:
-                            pass
+                        if bstock['stock'] in buy_done_list or bstock['stock'] in non_buy_list:
+                            continue
+
                         if len(buy_done_list) < target_buy_count:
+                            print(bstock['stock'])
                             _buy_stock(bstock)
                         else:
                             pass

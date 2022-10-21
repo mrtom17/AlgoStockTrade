@@ -36,7 +36,7 @@ def do_order(stock_code, order_qty, order_price, prd_code="01", buy_flag=True, o
         return t1
     else:
         t1.printError()
-        return None
+        return t1
 
 def do_sell(stock_code, order_qty, order_price, prd_code="01", order_type="00"):
     t1 = do_order(stock_code, order_qty, order_price, buy_flag=False, order_type=order_type)

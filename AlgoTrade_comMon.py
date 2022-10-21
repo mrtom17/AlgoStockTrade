@@ -10,9 +10,9 @@ from collections import namedtuple
 from datetime import datetime
 
 # HTTP 연결 기본 정보를 정의 한다.
-svc_type = 'local'
+svc_type = ''
 
-if svc_type == '':
+if svc_type == 'local':
     conf_file = '/Users/tom.my/Public/Study/AlgoStockTrade/configini.yaml'
     conf2_file = '/Users/tom.my/Public/Study/AlgoStockTrade/cfg/tickerlist.yaml'
     LOG_FILE_DIR = '/Users/tom.my/Public/Study/AlgoStockTrade/log'
