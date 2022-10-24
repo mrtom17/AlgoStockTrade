@@ -133,7 +133,7 @@ def _buy_stock(infos):
 
         # 변동성 돌파 매매 전략 실행
         #print(stock,current_price,target_price,buy_qty)
-        if current_price <= target_price:
+        if current_price >= target_price:
             msgout('현금주문 가능금액 : '+ str(buy_amount))
             msgout(str(stock) + '는 현재가 ('+str(current_price)+')이고  주문 가격 (' + str(target_price) +') ' + str(buy_qty) + ' EA : meets the buy condition!`')
             ret = atof.do_buy(str(stock) , buy_qty, target_price)
