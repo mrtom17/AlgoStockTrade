@@ -99,16 +99,20 @@ def _check_profit():
     try:
         # 보유한 주식과 예수금을 반환한다.
         mystocklist = mystock.get_acct_balance()
+        mystockcnt = int(len(mystocklist))
         stocks= []
-        for i in range(0,len(mystocklist)):
-            stock_code = mystocklist.iloc[i].name
-            stock_psbl_qty = mystocklist.iloc[i]['매도가능수량']
-            stock_cur_price = mystocklist.iloc[i]['현재가']
-            profit_percent = mystocklist.iloc[i]['수익율']
-            if profit_percent > 15.5:
-                stocks.append({'sell_code': stock_code, 'sell_qty': stock_psbl_qty,'sell_price': stock_cur_price})
-            time.sleep(1)
-        return stocks
+        if mystockcnt > 0:
+            for i in range(0,mystockcnt):
+                stock_code = mystocklist.iloc[i].name
+                stock_psbl_qty = mystocklist.iloc[i]['매도가능수량']
+                stock_cur_price = mystocklist.iloc[i]['현재가']
+                profit_percent = mystocklist.iloc[i]['수익율']
+                if profit_percent > 20.1 or profit_percent < -3.0:
+                    stocks.append({'sell_code': stock_code, 'sell_qty': stock_psbl_qty,'sell_price': stock_cur_price})
+                #time.sleep(1)
+            return stocks
+        else:
+            return None
     except Exception as ex:
         msgout("_check_profit() -> exception! " + str(ex))  
 
@@ -156,6 +160,7 @@ def _sell_each_stock(stocks):
         for s in stocks:
             if s['sell_qty'] != 0:
                 current_price_n = int(trinfo.get_current_price(s['sell_code'])['stck_prpr'])
+                profit_percent = s['sell_percent']
                 current_price_s = s['sell_price']
                 if current_price_n > current_price_s:
                     current_price = current_price_n
@@ -163,12 +168,14 @@ def _sell_each_stock(stocks):
                     current_price = current_price_s
 
                 ret = atof.do_sell(s['sell_code'], s['sell_qty'], current_price)
-                if ret is not None:
-                    msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 성공 ->('+str(s['sell_code'])+')('+str(current_price)+')')
-                    return True
+                if ret:
+                    msg = '변동성 돌파 매도 주문(이익율 '+str(profit_percent)+'% 달성) 성공 ->('+str(s['sell_code'])+')('+str(current_price)+')'
+                    msgout(msg)
+                    atcm.send_slack_msg("#stock",msg)
                 else:
-                    msgout('변동성 돌파 매도 주문(이익율 4.8% 달성) 실패 ->('+str(s['sell_code'])+')')
-                    return False
+                    msg = '변동성 돌파 매도 주문(이익율 '+str(profit_percent)+'% 달성) 실패 ->('+str(s['sell_code'])+')'
+                    msgout(msg)
+                    atcm.send_slack_msg("#stock",msg)
     except Exception as ex:
         msgout("_sell_each_stock() -> exception! " + str(ex))
 
@@ -267,7 +274,12 @@ if '__main__' == __name__:
                             pass
                         time.sleep(1)
                 if t_now.minute == 30 and 0 <= t_now.second <=3:
-                    atcm.send_slack_msg("#stock",msg_proc)
+                    if t_now.hour > 12:
+                        sell_stock_list = _check_profit()
+                    if sell_stock_list is None or len(sell_stock_list) == 0:
+                        atcm.send_slack_msg("#stock",msg_proc)
+                    else:
+                        _sell_each_stock(sell_stock_list)
                     time.sleep(1)
 
             if t_sell < t_now < t_exit:
