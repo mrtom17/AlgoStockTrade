@@ -211,6 +211,7 @@ if '__main__' == __name__:
         target_stock_values = []
         buy_done_list = []
         non_buy_list = []
+        sell_stock_list = []
         target_buy_count = atcm._cfg['targetbuycount']
         buy_percent = atcm._cfg['buypercent']
         total_cash = int(mystock.get_buyable_cash())
