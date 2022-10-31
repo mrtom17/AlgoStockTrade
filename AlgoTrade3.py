@@ -88,6 +88,7 @@ def get_buy_stock_info(stock_list):
             _stock_output = {'stock' : stock ,'target_p' : int(target_price)}
             stock_output.append(_stock_output)
             time.sleep(1)
+        msgout(stock_output)
         return stock_output
 
     except Exception as ex:
