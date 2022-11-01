@@ -65,7 +65,7 @@ def get_buyable_cash(stock_code='', qry_price=0, prd_code='01'):
 
     t1 = _url_fetch(url, tr_id, params)
     if t1.isOK():
-        return int(t1.getBody().output['ord_psbl_cash'])
+        return int(t1.getBody().output['nrcvb_buy_amt'])
     else:
         t1.printError()
         return 0
