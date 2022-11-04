@@ -182,7 +182,8 @@ def _sell_each_stock(stocks):
 
 # 주식 매도
 def _sell_stock():
-    # 보유한 모든 종목을 당일 종가 혹은 다음날 시작가에 매도 
+    # 보유한 모든 종목을 당일 종가 혹은 다음날 시작가에 매도
+    global ret 
     try:
         while True:
             stocks = get_mystock_balance('ALL')
@@ -202,7 +203,7 @@ def _sell_stock():
                 time.sleep(1)
             time.sleep(30)
     except Exception as ex:
-        msgout("sell_all() -> exception! " + str(ex))
+        msgout("_sell_stock() -> exception! " + str(ex))
 
 if '__main__' == __name__:
     try:
