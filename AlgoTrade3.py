@@ -115,7 +115,7 @@ def _check_profit():
                 stock_psbl_qty = mystocklist.iloc[i]['매도가능수량']
                 stock_cur_price = mystocklist.iloc[i]['현재가']
                 profit_percent = mystocklist.iloc[i]['수익율']
-                if profit_percent > 20.1 or profit_percent <= -3.0:
+                if profit_percent > 20.1:
                     stocks.append({'sell_code': stock_code, 'sell_qty': stock_psbl_qty,'sell_percent': profit_percent,'sell_price': stock_cur_price})
                 #time.sleep(1)
             return stocks
@@ -186,6 +186,9 @@ def _buy_stock(infos):
 def _sell_each_stock(stocks):
     # 보유한 모든 종목을 당일 종가 혹은 다음날 시작가에 매도 
     try:
+        if stocks is None or int(len(stocks)) == 0:
+            return False
+
         for s in stocks:
             ticker = s['sell_code']
             ticker_qty = s['sell_qty']
@@ -207,6 +210,7 @@ def _sell_each_stock(stocks):
                     msg = '변동성 돌파 매도 주문(이익율 '+str(ticker_percent)+'% 달성) 실패 ->('+str(ticker)+')'
                     msgout(msg)
                     atcm.send_slack_msg("#stock",msg)
+        return True
     except Exception as ex:
         msgout("_sell_each_stock() -> exception! " + str(ex))
 
@@ -294,7 +298,7 @@ if '__main__' == __name__:
                 if t_9 < t_now < t_start and soldout == False:
                     soldout = True
                     sellable_stocks = _start_sellable_stock()
-                    if _sell_each_stock(sellable_stocks):
+                    if _sell_each_stock(sellable_stocks) == True:
                         msgout(msg_resell)
                         atcm.send_slack_msg("#stock",msg_resell)
                 # 주식 구매 가능 예수금을 가져온다
