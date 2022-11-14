@@ -115,7 +115,7 @@ def _check_profit():
                 stock_psbl_qty = mystocklist.iloc[i]['매도가능수량']
                 stock_cur_price = mystocklist.iloc[i]['현재가']
                 profit_percent = mystocklist.iloc[i]['수익율']
-                if profit_percent > 20.1:
+                if profit_percent > 20.1 or profit_percent <= -3.0:
                     stocks.append({'sell_code': stock_code, 'sell_qty': stock_psbl_qty,'sell_percent': profit_percent,'sell_price': stock_cur_price})
                 #time.sleep(1)
             return stocks
@@ -242,7 +242,7 @@ def _sell_stock():
                         msgout('변동성 돌파 매도 주문 성공 ->('+str(company)+')('+str(current_price)+')')
                     else:
                         msgout('변동성 돌파 매도 주문 실패 ->('+str(company)+')')
-                time.sleep(1)
+                time.sleep(0.1)
             time.sleep(30)
     except Exception as ex:
         msgout("_sell_stock() -> exception! " + str(ex))
