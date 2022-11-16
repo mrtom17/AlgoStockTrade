@@ -60,7 +60,12 @@ def _get_buyable_currency():
 
     atcm.auth(svr,product='01')
     buy_percent = atcm._cfg['buypercent']
+    base_cach = atcm._cfg['basecash']
     total_cash = int(mystock.get_buyable_cash())
+    if total_cash > base_cach:
+        total_cash = base_cach
+    else:
+        total_cash = total_cash
     buy_amount = total_cash * buy_percent
     msgout('----------------100% 증거금 주문 가능 금액 :'+str(total_cash))
     msgout('----------------종목별 주문 비율 :'+str(buy_percent))
