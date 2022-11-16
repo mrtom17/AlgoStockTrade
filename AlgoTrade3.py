@@ -159,6 +159,7 @@ def _buy_stock(infos):
             return False
 
         current_price = int(trinfo.get_current_price(stock)['stck_prpr'])
+        yesterday_sign = int(trinfo.get_current_price(stock)['prdy_vrss_sign'])
         buy_qty = 0
 
         if current_price > 0:
@@ -171,9 +172,8 @@ def _buy_stock(infos):
             msgout('현금주문 가능금액 : '+ str(buy_amount))
             msgout(str(stock) + '는 현재가 ('+str(current_price)+')이고  주문 가격 (' + str(target_price) +') ' + str(buy_qty) + ' EA : meets the buy condition!`')
             ret = atof.do_buy(str(stock) , buy_qty, target_price)
-            #print(ret)
             if ret:
-                msgout('변동성 돌파 매매 성공 -> 주식('+str(stock)+') 매수가격 ('+str(target_price)+')')
+                msgout('변동성 돌파 매매 성공 -> 주식('+str(stock)+') 매수가격 ('+str(target_price)+') 전일 대비 사인 5:하락, 2:상승 ('+str(yesterday_sign)+')')
                 buy_done_list.append(stock)
             else:
                 msgout('변동성 돌파 매매 실패 -> 주식('+str(stock)+')')
@@ -323,7 +323,6 @@ if '__main__' == __name__:
 
                         if len(buy_done_list) < target_buy_count:
                             _buy_stock(bstock)
-                            pass
                         else:
                             pass
                         time.sleep(1)
