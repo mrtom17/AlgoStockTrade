@@ -113,6 +113,7 @@ def _check_profit():
         # 보유한 주식과 예수금을 반환한다.
         mystocklist = mystock.get_acct_balance()
         mystockcnt = int(len(mystocklist))
+
         stocks= []
         if mystockcnt > 0:
             for i in range(0,mystockcnt):
@@ -120,7 +121,12 @@ def _check_profit():
                 stock_psbl_qty = mystocklist.iloc[i]['매도가능수량']
                 stock_cur_price = mystocklist.iloc[i]['현재가']
                 profit_percent = mystocklist.iloc[i]['수익율']
-                if profit_percent > 20.1 or profit_percent <= -3.0:
+                current_price = int(trinfo.get_current_price(stock_code)['stck_prpr'])
+                yesterday_sign = int(trinfo.get_current_price(stock_code)['prdy_vrss_sign'])
+
+                #print(stock_code,stock_psbl_qty,stock_cur_price,profit_percent,current_price,yesterday_sign)
+                #print(mystocklist)
+                if (profit_percent > 20.1 or profit_percent <= -3.0) and yesterday_sign == 2:
                     stocks.append({'sell_code': stock_code, 'sell_qty': stock_psbl_qty,'sell_percent': profit_percent,'sell_price': stock_cur_price})
                 #time.sleep(1)
             return stocks
@@ -327,12 +333,13 @@ if '__main__' == __name__:
                             continue
 
                         if len(buy_done_list) < target_buy_count:
-                            _buy_stock(bstock)
+                            #_buy_stock(bstock)
+                            pass
                         else:
                             pass
                         time.sleep(1)
                 # 매시 30분 마다 프로세스 확인 메시지(슬랙)를 보낸다
-                if t_now.minute == 30 and 0 <= t_now.second <=3:
+                if t_now.minute == 30 and 0 <= t_now.second <=14:
 
                     if t_now.hour > 12:
                         sell_stock_list = _check_profit()
