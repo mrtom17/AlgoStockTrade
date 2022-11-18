@@ -333,8 +333,7 @@ if '__main__' == __name__:
                             continue
 
                         if len(buy_done_list) < target_buy_count:
-                            #_buy_stock(bstock)
-                            pass
+                            _buy_stock(bstock)
                         else:
                             pass
                         time.sleep(1)
