@@ -333,9 +333,7 @@ if '__main__' == __name__:
                     pass
                 else:
                     target_stock_values = get_buy_stock_info(stock_list)
-
-                print(target_stock_values)
-
+                    
                 # 주식 매수 목표 갯수 보다 작으면 매수 진행
                 if len(buy_done_list) < target_buy_count:
                     for bstock in target_stock_values:
