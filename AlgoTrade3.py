@@ -104,7 +104,6 @@ def get_buy_stock_info(stock_list):
             _stock_output = {'stock' : stock ,'target_p' : int(target_price)}
             stock_output.append(_stock_output)
             time.sleep(1)
-        msgout(stock_output)
         return stock_output
     except Exception as ex:
         msgout("`get_buy_stock_info() -> exception! " + str(ex) + "`")
@@ -333,7 +332,7 @@ if '__main__' == __name__:
                     pass
                 else:
                     target_stock_values = get_buy_stock_info(stock_list)
-                    
+
                 # 주식 매수 목표 갯수 보다 작으면 매수 진행
                 if len(buy_done_list) < target_buy_count:
                     for bstock in target_stock_values:
