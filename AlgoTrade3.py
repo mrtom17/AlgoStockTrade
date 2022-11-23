@@ -104,6 +104,7 @@ def get_buy_stock_info(stock_list):
             _stock_output = {'stock' : stock ,'target_p' : int(target_price)}
             stock_output.append(_stock_output)
             time.sleep(1)
+        msgout(stock_output)
         return stock_output
     except Exception as ex:
         msgout("`get_buy_stock_info() -> exception! " + str(ex) + "`")
@@ -328,7 +329,7 @@ if '__main__' == __name__:
                 # 매수할 타깃 주식을 가져온다.
                 stocks_cnt = int(len(stock_list))
                 target_cnt = int(len(target_stock_values))
-                if stocks_cnt == target_cnt:
+                if stocks_cnt >= target_cnt:
                     pass
                 else:
                     target_stock_values = get_buy_stock_info(stock_list)
