@@ -346,7 +346,7 @@ if '__main__' == __name__:
                             pass
                         time.sleep(1)
                 # 매시 30분 마다 프로세스 확인 메시지(슬랙)를 보낸다
-                if t_now.minute == 30 and 0 <= t_now.second <=14:
+                if t_now.minute == 30 and 0 <= t_now.second <=4:
 
                     if t_now.hour > 12:
                         sell_stock_list = _check_profit()
