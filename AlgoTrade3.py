@@ -338,12 +338,10 @@ if '__main__' == __name__:
                 if len(buy_done_list) < target_buy_count:
                     for bstock in target_stock_values:
                         if bstock['stock'] in buy_done_list or bstock['stock'] in non_buy_list:
-                            continue
-
-                        if len(buy_done_list) < target_buy_count:
-                            _buy_stock(bstock)
-                        else:
                             pass
+                        else:
+                            _buy_stock(bstock)
+
                         time.sleep(1)
                 # 매시 30분 마다 프로세스 확인 메시지(슬랙)를 보낸다
                 if t_now.minute == 30 and 0 <= t_now.second <=4:
