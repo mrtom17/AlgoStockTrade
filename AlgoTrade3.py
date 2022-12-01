@@ -84,11 +84,8 @@ def get_buy_stock_info(stock_list):
             df = trinfo.get_stock_history_by_ohlcv(stock,adVar=True)
 
             if str_today == df.iloc[0].name:
-                if df.iloc[0]['Volume'] > 0:
-                    today_open = df.iloc[0]['Open']
-                    lastday = df.iloc[1]
-                else:
-                    continue
+                today_open = df.iloc[0]['Open']
+                lastday = df.iloc[1]
             else:
                 continue
             lastday_high = lastday['High']
@@ -329,7 +326,7 @@ if '__main__' == __name__:
                 # 매수할 타깃 주식을 가져온다.
                 stocks_cnt = int(len(stock_list))
                 target_cnt = int(len(target_stock_values))
-                if stocks_cnt == target_cnt or target_cnt >= target_buy_count:
+                if stocks_cnt == target_cnt:
                     pass
                 else:
                     target_stock_values = get_buy_stock_info(stock_list)
