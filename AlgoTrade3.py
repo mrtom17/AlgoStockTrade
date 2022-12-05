@@ -307,7 +307,7 @@ if '__main__' == __name__:
                 atcm.send_slack_msg("#stock",msg_week)
                 sys.exit(0)
             
-             # 09:00 ~ 15:15 주식 거래 시작
+            # 09:00 ~ 15:15 주식 거래 시작
             if t_9 < t_now < t_sell:
                 # 09:00 ~ 09:01
                 # 장 시작, 전일 판매하지 못한 잔여 주식 현재가에 매도           
@@ -336,8 +336,11 @@ if '__main__' == __name__:
                     for bstock in target_stock_values:
                         if bstock['stock'] in buy_done_list or bstock['stock'] in non_buy_list:
                             pass
-                        else:
+
+                        if len(buy_done_list) < target_buy_count:
                             _buy_stock(bstock)
+                        else:
+                            continue
 
                         time.sleep(1)
                 # 매시 30분 마다 프로세스 확인 메시지(슬랙)를 보낸다
