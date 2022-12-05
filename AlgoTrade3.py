@@ -326,26 +326,42 @@ if '__main__' == __name__:
                 # 매수할 타깃 주식을 가져온다.
                 stocks_cnt = int(len(stock_list))
                 target_cnt = int(len(target_stock_values))
+                buy_done_cnt = int(len(buy_done_list))
                 if stocks_cnt == target_cnt:
                     pass
                 else:
                     target_stock_values = get_buy_stock_info(stock_list)
 
                 # 주식 매수 목표 갯수 보다 작으면 매수 진행
-                if len(buy_done_list) < target_buy_count:
+                if buy_done_cnt < target_buy_count:
                     for bstock in target_stock_values:
                         if bstock['stock'] in buy_done_list or bstock['stock'] in non_buy_list:
                             pass
 
-                        if len(buy_done_list) < target_buy_count:
-                            _buy_stock(bstock)
+                        if buy_done_cnt < target_buy_count:
+                            #_buy_stock(bstock)
+                            pass
                         else:
                             continue
 
                         time.sleep(1)
                 # 매시 30분 마다 프로세스 확인 메시지(슬랙)를 보낸다
                 if t_now.minute == 30 and 0 <= t_now.second <=4:
+                    _mystock_list = get_mystock_balance('ALL')
+                    _mystock_cnt = int(len(_mystock_cnt))
 
+                    if buy_done_cnt == _mystock_cnt:
+                        pass
+                    else:
+                        #주문 취소
+                        atof.do_cancel_all()
+                        #메모리 삭제
+                        for stock in _mystock_list:
+                            ticker = stock['code']
+                            if ticker in buy_done_list:
+                                pass
+                            else:
+                                buy_done_list.remove(ticker)
                     if t_now.hour > 12:
                         sell_stock_list = _check_profit()
 
