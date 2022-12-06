@@ -340,8 +340,7 @@ if '__main__' == __name__:
                             pass
 
                         if buy_done_cnt < target_buy_count:
-                            #_buy_stock(bstock)
-                            pass
+                            _buy_stock(bstock)
                         else:
                             continue
 
