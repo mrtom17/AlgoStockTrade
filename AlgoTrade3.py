@@ -275,6 +275,7 @@ if '__main__' == __name__:
         target_buy_count = atcm._cfg['targetbuycount']
         buy_percent = 0
         total_cash = 0
+        _mystock_cnt = 0
         soldout = False
 
         while True:
