@@ -348,7 +348,7 @@ if '__main__' == __name__:
                 # 매시 30분 마다 프로세스 확인 메시지(슬랙)를 보낸다
                 if t_now.minute == 30 and 0 <= t_now.second <=4:
                     _mystock_list = get_mystock_balance('ALL')
-                    _mystock_cnt = int(len(_mystock_cnt))
+                    _mystock_cnt = int(len(_mystock_list))
 
                     if buy_done_cnt == _mystock_cnt:
                         pass
